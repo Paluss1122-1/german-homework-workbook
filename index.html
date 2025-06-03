@@ -108,6 +108,13 @@
   </div>
 
   <script>
+    window.onload = function () {
+      fetch('https://backend-website-zqow.onrender.com/api/analytics/german', {
+        method: 'POST'
+      });
+    };
+    
+
     document.getElementById('date').innerText = "Wird geladen...";
     document.getElementById('homework').innerText = "Wird geladen..."
 
