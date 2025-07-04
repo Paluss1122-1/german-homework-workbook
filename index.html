@@ -177,21 +177,23 @@
           if (snap.exists()) {
             const data = snap.data();
             homeworkElem.innerText = data.Deutsch || "Keine Hausaufgabe";
-            dateElem.innerText = data.DeutschDatum; // du kannst auch ein Datum aus Firestore speichern, falls gewünscht
+            dateElem.innerText = data.DeutschDatum;
             document.title = `${data.DeutschDatum} - Hausaufgaben Lösungen`;
-            if (data.Deutsch == "NICHTS!" && !started) {
-              const gallery = document.getElementById('pictures')
-              const img = document.createElement('img')
-              img.src = "https://xmyszcahhvgcrwjyqdsq.supabase.co/storage/v1/object/public/bilder/Generell/41S-5Y8WjdL._SL500_.jpg"
-              img.alt = " "
-              img.id = 'workbookImage'
-              gallery.appendChild(img)
-              started = true;
+            if (data.Deutsch == "NICHTS!") {
+              const gallery = document.getElementById('pictures');
+              const imgSrc = "https://xmyszcahhvgcrwjyqdsq.supabase.co/storage/v1/object/public/bilder/Generell/41S-5Y8WjdL._SL500_.jpg";
+              const alreadyExists = !!gallery.querySelector(`img#workbookImage[src="${imgSrc}"]`);
+              if (!alreadyExists) {
+                const img = document.createElement('img');
+                img.src = imgSrc;
+                img.alt = " ";
+                img.id = 'workbookImage';
+                gallery.appendChild(img);
+              }
             }
           } else {
             homeworkElem.innerText = "Daten nicht gefunden! Fehler wurde automatisiert gemeldet!";
             dateElem.innerText = "-";
-
             await addDoc(collection(db, "Fehlerberichte"), {
               typ: "Dokument nicht gefunden",
               ort: "Hausaufgaben/hausaufgaben",
@@ -202,7 +204,6 @@
         } catch (err) {
           homeworkElem.innerText = "Fehler beim Laden";
           console.error(err);
-
           await addDoc(collection(db, "Fehlerberichte"), {
             typ: "Technischer Fehler",
             fehler: err.message,
@@ -368,7 +369,6 @@
         })
 
       const gallery = document.getElementById('pictures')
-      gallery.innerHTML = '' // clear before reloading
 
       if (error) {
         console.error('Fehler beim Laden:', error)
